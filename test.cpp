@@ -13,12 +13,12 @@ int main(){
     Vector2 pos = {10, 10, 64, 64};
     Color color = {255, 255, 255, 255};
 
-    sprite->setPos(pos);
-    sprite->setColor(color);
+    sprite->pos = pos;
+    sprite->color = color;
     while(!checkQuit()){
       clearScreen();
 
-      pos = sprite->getPos();
+      pos = sprite->pos;
 
       if(checkGamepadPress(0, DPadLeft)){
         pos.x -= 2;
@@ -32,7 +32,7 @@ int main(){
        rumbleGamepad(0, 6000,6000,1000);
       }
 
-      sprite->setPos(pos);
+      sprite->pos = pos;
         
 
       drawRectangle(sprite);     

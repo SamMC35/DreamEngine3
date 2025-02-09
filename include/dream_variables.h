@@ -14,7 +14,7 @@ extern SDL_GameController* player1;
 
 //Vector2 to represent 2D position and size
 typedef struct Vector2{
-  int x, y, w, h;
+  float x, y, w, h;
 }Vector2;
 
 //Color data

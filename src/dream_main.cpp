@@ -6,9 +6,10 @@
 #include <SDL.h>
 #include <SDL_render.h>
 #include <SDL_gamecontroller.h>
+#include <SDL_rect.h>
 using namespace std;
 //Add a list of screens along with their priority
-//
+
 
 SDL_Window* window;
 SDL_Event event;
@@ -56,7 +57,7 @@ bool initDreamEngine(char* window_name, int resX_arg, int resY_arg, bool fullscr
       cerr << "SDL failed to initialize" << SDL_GetError() << endl;
     }
     
-    SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
+    //SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
 		
     //
 		//
@@ -71,6 +72,13 @@ bool checkQuit(){
   }
 
   return false;
+}
+
+bool collisionCheck(Vector2 a, Vector2 b){
+  SDL_FRect* aRect = new SDL_FRect{a.x, a.y, a.w, a.h};
+  SDL_FRect* bRect = new SDL_FRect{b.x, b.y, b.w, b.h};
+
+  return SDL_HasIntersectionF(aRect, bRect);
 }
 
 void quitDreamEngine(){
