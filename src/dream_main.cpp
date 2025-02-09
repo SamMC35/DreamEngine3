@@ -7,6 +7,7 @@
 #include <SDL_render.h>
 #include <SDL_gamecontroller.h>
 #include <SDL_rect.h>
+#include <SDL_ttf.h>
 using namespace std;
 //Add a list of screens along with their priority
 
@@ -31,6 +32,7 @@ bool initDreamEngine(char* window_name, int resX_arg, int resY_arg, bool fullscr
 
 		//Start every subsystem
 		if(SDL_Init(SDL_INIT_EVERYTHING) == 0){
+      TTF_Init();
       window = SDL_CreateWindow((char*) "Hello", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, resX, resY, SDL_WINDOW_OPENGL);
 
       cout << "Window created: " << window << endl;
@@ -85,6 +87,7 @@ void quitDreamEngine(){
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
 
+  TTF_Quit();
   SDL_Quit();
 }
 

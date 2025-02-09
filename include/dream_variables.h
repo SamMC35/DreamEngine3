@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <SDL_gamecontroller.h>
+#include <SDL_ttf.h>
 #include <iostream>
 
 using namespace std;
@@ -22,6 +23,10 @@ typedef struct Color{
   Uint8 r, g, b, a;
 }Color;
 
-
+typedef struct Font{
+  TTF_Font* fontTtf;
+  int ptSize;
+  char* fontPath;
+}Font;
 
 #endif 

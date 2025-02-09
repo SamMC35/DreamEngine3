@@ -29,8 +29,8 @@ typedef enum ControllerButton{
 }ControllerButton;
 
 typedef enum ControllerAxis{
-      LeftStickX,       // Left axis X
-      LeftStickY,       // Left axis Y
+      LeftStickX = SDL_CONTROLLER_AXIS_LEFTX,       // Left axis X
+      LeftStickY = SDL_CONTROLLER_AXIS_LEFTY,       // Left axis Y
       RightStickX,      // Right axis X 
       RightStickY,       // Right axis Y 
       LeftTrigger,      // Left Trigger Axis(Not for Nintendo Switch)
@@ -38,7 +38,7 @@ typedef enum ControllerAxis{
 }ControllerAxis;
 
 bool checkGamepadPress(int joystick_index, ControllerButton button);
-void checkGamepadAnalog(int joystick_index, ControllerAxis axis);
+float checkGamepadAnalog(int joystick_index, ControllerAxis axis);
 void rumbleGamepad(int joystick_index, Uint16 left_motor, Uint16 right_motor, Uint32 duration);
 
 #endif // !GAMEPAD_H
