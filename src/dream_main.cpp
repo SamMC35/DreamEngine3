@@ -21,6 +21,8 @@ SDL_Renderer* renderer = nullptr;
 
 SDL_GameController* player1;
 
+bool gCanQuit = false;
+
 unsigned int resX = 0;
 unsigned int resY = 0;
 
@@ -73,7 +75,11 @@ bool checkQuit(){
     return true;
   }
 
-  return false;
+  return gCanQuit;
+}
+
+void killGame(){
+  gCanQuit = true;
 }
 
 bool collisionCheck(Vector2 a, Vector2 b){

@@ -2,12 +2,15 @@
 #include<SDL.h>
 #include<SDL_gamecontroller.h>
 #include<iostream>
+#include<unordered_map>
 #include<dream_variables.h>
 #include<cmath>
 
 #define DEADZONE 8000
 
 using namespace std;
+
+unordered_map<int, bool> joyState;
 
 SDL_GameControllerButton getValue(ControllerButton button){
   return static_cast<SDL_GameControllerButton>(button);
@@ -20,6 +23,21 @@ SDL_GameControllerAxis getAxisValue(ControllerAxis axis){
 bool checkGamepadPress(int joystick_index, ControllerButton button){
     //cout << "Checking for button press: " << button <<endl; 
     return SDL_GameControllerGetButton(player1, getValue(button));
+}
+
+bool checkGamepadHold(int joystick_index, ControllerButton button){
+    bool canPress = checkGamepadPress(joystick_index, button);
+
+    if(canPress && !joyState[button]){
+      joyState[button] = true;
+      return true;
+    } 
+
+    if(!canPress){
+      joyState[button] = false;
+    }
+
+    return false;
 }
 
 float checkGamepadAnalog(int joystick_index, ControllerAxis axis){

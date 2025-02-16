@@ -16,5 +16,6 @@ typedef struct Sprite{
 void drawRectangle(Sprite*);
 void drawLine(Sprite*);
 void drawPixel(Sprite*);
+void drawBlendRectangle(Sprite*);
 
 #endif // !DEBUG

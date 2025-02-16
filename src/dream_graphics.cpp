@@ -35,4 +35,8 @@ void drawPixel(Sprite* sprite){
   SDL_RenderDrawPoint(renderer, pos.x, pos.y);
 }
 
-
+void drawBlendRectangle(Sprite* sprite){
+  SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_MOD);
+  drawRectangle(sprite);
+  SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+}

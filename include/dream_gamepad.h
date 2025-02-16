@@ -22,6 +22,8 @@ typedef enum ControllerButton{
         ZL,         // Left trigger
         ZR,         // Right trigger
 
+        START = SDL_CONTROLLER_BUTTON_START,
+
         // Analog stick buttons
         LeftStick,  // Pressing down on the left analog stick
         RightStick  // Pressing down on the right analog stick 
@@ -40,6 +42,6 @@ typedef enum ControllerAxis{
 bool checkGamepadPress(int joystick_index, ControllerButton button);
 float checkGamepadAnalog(int joystick_index, ControllerAxis axis);
 void rumbleGamepad(int joystick_index, Uint16 left_motor, Uint16 right_motor, Uint32 duration);
-
+bool checkGamepadHold(int joystick_index, ControllerButton button);
 #endif // !GAMEPAD_H
 

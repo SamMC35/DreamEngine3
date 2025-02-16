@@ -15,7 +15,8 @@ using namespace std;
 
 typedef enum GameState{
   GAME_MENU,
-  GAME_PLAYING
+  GAME_PLAYING,
+  GAME_TITLE
 }GameState;
 
 typedef struct Player{
@@ -26,8 +27,8 @@ typedef struct Player{
 Player* player = NULL;
 
 typedef enum MainMenu{
-  START_GAME,
-  EXIT_GAME
+  START_GAME = 0,
+  EXIT_GAME = 1
 }MainMenu;
 
 typedef enum PauseMenu{
@@ -38,25 +39,34 @@ typedef enum PauseMenu{
 GameState gState;
 bool isPaused;
 
+
 Font* titleFont = new Font();
 Font* scoreFont = new Font();
 
 char* textFont = (char*)"8bit.ttf";
 
 Sprite* cursor;
+Sprite* title;
 
 Color white = {255, 255, 255, 255}; 
+Color black = {0, 0, 0, 255};
 
 int menu_index = 0;
 
 bool checkPress = false;
 
+float fResX;
+float fResY;
+
+float px;
+float py;
+
 void gameInit(){
-  gState = GAME_MENU;
+  gState = GAME_TITLE;
   isPaused = false;
 
-  loadFontFromFile((char*)"8bit.ttf", titleFont, 48);
-  loadFontFromFile((char*)"8bit.ttf", scoreFont, 16);
+  loadFontFromFile((char*)"8bit.ttf", titleFont, 56);
+  loadFontFromFile((char*)"8bit.ttf", scoreFont, 32);
 
   player = new Player();
 
@@ -65,32 +75,50 @@ void gameInit(){
   player->pSprite->color = white;
 
   cursor = new Sprite();
-  cursor->color = white;
+  cursor->color = {255,255,255,200};
+
+  fResX = (float)resX;
+  fResY = (float)resY;
+
+  px = fResX/12;
+  py = fResY/12;
+
+  title = new Sprite();
+  title->pos = {fResX/6 - (px/4), -16, 0, 0};
+
+  cout << "ResX: " << resX << " ResY: " << resY << endl;
+  cout << "fResX: " << fResX << " fResY: " << fResY << endl;
+}
+
+void gameTitle(){
+  title->pos.y += 0.4f;
+  writeText((char*)"SPACE INVADERS", {fResX/6 - (px/4), title->pos.y, 0, 0}, white, titleFont);
+
+  if(title->pos.y >= (fResY/8) || checkGamepadPress(0, START)){
+    gState = GAME_MENU;
+  }
+
 }
 
 void gameMenu(){
   //TODO: write the title screen
   //Title screen
   
-  writeText((char*)"SPACE INVADERS", {320, 240, 0, 0}, white, titleFont);
+  
+  
+  writeText((char*)"SPACE INVADERS", {fResX/6 - (px/4), fResY/8, 0, 0}, white, titleFont);
   
 
   //Menu items
-  writeText((char*)"PLAY", {720, 720, 0, 0}, white, scoreFont);
-  writeText((char*)"QUIT", {720, 780, 0, 0}, white, scoreFont);
+  writeText((char*)"PLAY", {fResX/2.4f, fResY/1.5f, 0, 0}, white, scoreFont);
+  writeText((char*)"QUIT", {fResX/2.4f, fResY/1.5f + py, 0, 0}, white, scoreFont);
 
 
 
-  if(checkGamepadPress(0, DPadUp) && !checkPress){
+  if(checkGamepadHold(0, DPadUp)){
     menu_index--;
-    checkPress = true;
-  } else if(checkGamepadPress(0, DPadDown) && !checkPress){
+  } else if(checkGamepadHold(0, DPadDown)){
     menu_index++;
-    checkPress = true;
-  }
-
-  if(!checkGamepadPress(0, DPadUp) && !checkGamepadPress(0, DPadDown)){
-    checkPress = false;
   }
 
   if(menu_index > 1){
@@ -103,21 +131,52 @@ void gameMenu(){
 
   switch(menu_index){
     case 0:
-      cursorPos = {680, 720, 16, 16};
+      cursorPos = {fResX/2.4f, fResY/1.5f + 6.0f, 88, 36};
       break;
     
     case 1:
-      cursorPos = {680, 780, 16, 16};
+      cursorPos = {fResX/2.4f, fResY/1.5f + 6.0f + py, 88, 36};
+      break;
+
+    default:
+      break;
+  }
+ 
+
+  cursor->pos = cursorPos;
+
+  drawRectangle(cursor);
+  
+  switch(menu_index){
+    case 0:
+      writeBlendedText((char*)"PLAY", {fResX/2.4f, fResY/1.5f, 0, 0}, black, scoreFont);
+      break;
+    
+    case 1:
+      writeBlendedText((char*)"QUIT", {fResX/2.4f, fResY/1.5f + py, 0, 0}, black, scoreFont);
       break;
 
     default:
       break;
   }
 
-  cursor->pos = cursorPos;
+  
+  
+  //Logic checkPress
 
-  drawRectangle(cursor);
+  if(checkGamepadPress(0, A)){
+    switch (menu_index) {
+      case 0:
+        gState = GAME_PLAYING;
+        break;
+      case 1:
+        killGame();
+      default:  
+        break;
+    } 
+  }
 }
+
 
 void gameplayLogic(){
   //TODO: Player Logic
@@ -135,14 +194,23 @@ void gamePlay(){
   if(!isPaused){
     gameplayLogic();
   } else{
-
+    writeText((char*)"PAUSED", {0,0,12,12}, white, scoreFont);
   }
 
+
+
+  if(checkGamepadHold(0, START)){
+    isPaused = !isPaused;
+  }
 
 }
 
 void gameProcess(){
   switch(gState){
+    case GAME_TITLE:
+      gameTitle();
+      break;
+
     case GAME_MENU:
       gameMenu();
       break;

@@ -44,3 +44,18 @@ void writeText(char* text, Vector2 pos, Color color, Font* font){
 
    SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
 }
+
+void writeBlendedText(char* text, Vector2 pos, Color color, Font* font){
+   SDL_Color textColor = {color.r, color.g, color.b, color.a};
+
+   SDL_Surface* textSurface = TTF_RenderText_Solid(font->fontTtf, text, textColor);
+
+   SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+   SDL_SetTextureBlendMode(textTexture, SDL_BLENDMODE_MOD);
+
+   SDL_Rect textRect = {(int)pos.x, (int)pos.y, textSurface->w, textSurface->h};
+
+   SDL_FreeSurface(textSurface);
+
+   SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
+}
