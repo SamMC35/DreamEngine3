@@ -3,4 +3,6 @@
 
 void gameProcess();
 void gameInit();
+
+void freeGame();
 #endif

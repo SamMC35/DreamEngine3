@@ -8,10 +8,12 @@
 
 #include <game.h>
 
-#define LEFTPLAYERX 240
-#define RIGHTPLAYERX 1680
+#define LEFTPLAYERX 96
+#define RIGHTPLAYERX 624
 
 using namespace std;
+
+void gameLoad();
 
 typedef enum GameState{
   GAME_MENU,
@@ -24,7 +26,21 @@ typedef struct Player{
   int score;
 }Player;
 
+typedef struct Enemy{
+  Sprite* eSprite;
+  int id;
+  bool anim;
+  bool isDying;
+}Enemy;
+
+typedef struct Bullet{
+  Sprite* bSprite;
+}Bullet;
+
+vector<Enemy*> enemyList;
+
 Player* player = NULL;
+Bullet* bullet = NULL;
 
 typedef enum MainMenu{
   START_GAME = 0,
@@ -46,7 +62,6 @@ Font* scoreFont = new Font();
 char* textFont = (char*)"8bit.ttf";
 
 Sprite* cursor;
-Sprite* title;
 
 Color white = {255, 255, 255, 255}; 
 Color black = {0, 0, 0, 255};
@@ -55,65 +70,36 @@ int menu_index = 0;
 
 bool checkPress = false;
 
-float fResX;
-float fResY;
-
-float px;
-float py;
-
 void gameInit(){
-  gState = GAME_TITLE;
+  gState = GAME_MENU;
   isPaused = false;
 
   loadFontFromFile((char*)"8bit.ttf", titleFont, 56);
   loadFontFromFile((char*)"8bit.ttf", scoreFont, 32);
 
-  player = new Player();
-
-  player->pSprite = new Sprite();
-  player->pSprite->pos = {840.0f, 720.0f, 120.0f, 40.0f};
-  player->pSprite->color = white;
-
   cursor = new Sprite();
   cursor->color = {255,255,255,200};
-
-  fResX = (float)resX;
-  fResY = (float)resY;
-
-  px = fResX/12;
-  py = fResY/12;
-
-  title = new Sprite();
-  title->pos = {fResX/6 - (px/4), -16, 0, 0};
-
-  cout << "ResX: " << resX << " ResY: " << resY << endl;
-  cout << "fResX: " << fResX << " fResY: " << fResY << endl;
 }
 
 void gameTitle(){
-  title->pos.y += 0.4f;
-  writeText((char*)"SPACE INVADERS", {fResX/6 - (px/4), title->pos.y, 0, 0}, white, titleFont);
-
-  if(title->pos.y >= (fResY/8) || checkGamepadPress(0, START)){
-    gState = GAME_MENU;
-  }
-
+  
 }
 
 void gameMenu(){
   //TODO: write the title screen
   //Title screen
-  
-  
+
+  float fResX = (float)resX;
+  float fResY = (float)resY;
+
+  float px = (float)resX/12;
+  float py = (float)resY/12;
   
   writeText((char*)"SPACE INVADERS", {fResX/6 - (px/4), fResY/8, 0, 0}, white, titleFont);
   
-
   //Menu items
   writeText((char*)"PLAY", {fResX/2.4f, fResY/1.5f, 0, 0}, white, scoreFont);
   writeText((char*)"QUIT", {fResX/2.4f, fResY/1.5f + py, 0, 0}, white, scoreFont);
-
-
 
   if(checkGamepadHold(0, DPadUp)){
     menu_index--;
@@ -163,31 +149,100 @@ void gameMenu(){
   
   
   //Logic checkPress
-
   if(checkGamepadPress(0, A)){
     switch (menu_index) {
       case 0:
         gState = GAME_PLAYING;
+        gameLoad();
         break;
       case 1:
         killGame();
+        break;
       default:  
         break;
     } 
   }
 }
 
+void gameLoad(){
+  player = new Player();
+
+  player->pSprite = new Sprite();
+
+  player->pSprite->pos = {300.0f, 448.0f, 64.0f, 32.0f};
+  player->pSprite->color = white;
+  player->score = 0;
+
+  for(int x = 0; x < 8; x++){
+    Enemy* enemy = new Enemy();
+
+    enemy->eSprite = new Sprite();
+
+    enemy->eSprite->pos = {(float)(144 + 64*x), (float)96, (float)48, (float)48};
+    enemy->eSprite->color = {255, 0, 0};
+
+    enemyList.push_back(enemy);
+  }
+}
+
+void playerLogic(){
+  //Movement
+
+  float velX = 0;
+
+  if(checkGamepadPress(0, DPadLeft)){
+    velX = -4; 
+  } else if(checkGamepadPress(0, DPadRight)){
+    velX = 4;
+  }
+
+  if(player->pSprite->pos.x + velX < LEFTPLAYERX || player->pSprite->pos.x+player->pSprite->pos.w + velX > RIGHTPLAYERX){
+    velX = 0;
+  }
+  player->pSprite->pos.x += velX;
+}
+
+void bulletLogic(){
+  if(bullet == NULL && checkGamepadPress(0, A)){
+    bullet = new Bullet();
+    bullet->bSprite = new Sprite();
+    Vector2 playerPos = player->pSprite->pos;
+
+    bullet->bSprite->pos = {playerPos.x + playerPos.w/2, playerPos.y, 4, 12};
+    bullet->bSprite->color = white;
+  }
+
+  if(bullet != NULL){
+    float velY = -4;
+
+    bullet->bSprite->pos.y += velY;
+
+    if(bullet->bSprite->pos.y < 0){
+      delete bullet;
+      bullet = NULL;
+    }
+  }
+}
+
 
 void gameplayLogic(){
-  //TODO: Player Logic
-    
-
+  //TODO: Player gameplay 
+  playerLogic();
   //TODO: Enemy Logic
   //TODO: Bullet Logic
+  bulletLogic();
 }
 
 void gameplayDraw(){
+  drawRectangle(player->pSprite);
 
+  for(Enemy* e : enemyList){
+    drawRectangle(e->eSprite);
+  }
+
+  if(bullet != NULL){
+    drawRectangle(bullet->bSprite);
+  }
 }
 
 void gamePlay(){
@@ -197,12 +252,12 @@ void gamePlay(){
     writeText((char*)"PAUSED", {0,0,12,12}, white, scoreFont);
   }
 
-
+  gameplayDraw();
 
   if(checkGamepadHold(0, START)){
     isPaused = !isPaused;
   }
-
+  
 }
 
 void gameProcess(){
@@ -220,7 +275,23 @@ void gameProcess(){
       break;
 
     default:
-      cerr << "Wrong State:" << gState << endl;\
+      cerr << "Wrong State:" << gState << endl;
       break;
   }
 }
+
+void freeGame(){
+  delete player;
+
+  for(Enemy* enemy : enemyList){
+    delete enemy;
+  }
+
+  enemyList.clear();
+
+  delete scoreFont;
+  delete titleFont;
+
+  delete cursor;
+}
+
