@@ -43,5 +43,9 @@ bool checkGamepadPress(int joystick_index, ControllerButton button);
 float checkGamepadAnalog(int joystick_index, ControllerAxis axis);
 void rumbleGamepad(int joystick_index, Uint16 left_motor, Uint16 right_motor, Uint32 duration);
 bool checkGamepadHold(int joystick_index, ControllerButton button);
+
+void clearInputs();
+
+bool isAnyButtonPressed();
 #endif // !GAMEPAD_H
 

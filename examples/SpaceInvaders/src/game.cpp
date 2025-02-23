@@ -38,6 +38,8 @@ typedef struct Bullet{
 }Bullet;
 
 vector<Enemy*> enemyList;
+vector<Enemy*> killList;
+
 
 Player* player = NULL;
 Bullet* bullet = NULL;
@@ -54,6 +56,7 @@ typedef enum PauseMenu{
 
 GameState gState;
 bool isPaused;
+bool canUseButtons;
 
 
 Font* titleFont = new Font();
@@ -62,6 +65,7 @@ Font* scoreFont = new Font();
 char* textFont = (char*)"8bit.ttf";
 
 Sprite* cursor;
+Sprite* pauseBox;
 
 Color white = {255, 255, 255, 255}; 
 Color black = {0, 0, 0, 255};
@@ -152,8 +156,8 @@ void gameMenu(){
   if(checkGamepadPress(0, A)){
     switch (menu_index) {
       case 0:
-        gState = GAME_PLAYING;
         gameLoad();
+        gState = GAME_PLAYING;
         break;
       case 1:
         killGame();
@@ -183,6 +187,7 @@ void gameLoad(){
 
     enemyList.push_back(enemy);
   }
+  canUseButtons = false;
 }
 
 void playerLogic(){
@@ -224,13 +229,34 @@ void bulletLogic(){
   }
 }
 
+void checkBulletCollision(){
+  killList.clear();
+
+  bool done = false;
+
+  for (auto it = enemyList.begin(); it != enemyList.end(); ++it) {
+    if (collisionCheck((*it)->eSprite->pos, bullet->bSprite->pos)) {  
+        delete *it;  
+        enemyList.erase(it);  
+        delete bullet;
+        bullet = NULL;
+        break;  
+    }
+  }
+}
+
 
 void gameplayLogic(){
-  //TODO: Player gameplay 
-  playerLogic();
-  //TODO: Enemy Logic
-  //TODO: Bullet Logic
-  bulletLogic();
+  if(!isAnyButtonPressed()){
+    canUseButtons = true;
+  }
+  if(canUseButtons){
+    playerLogic();
+    bulletLogic();
+  }
+  if(bullet != NULL){
+    checkBulletCollision();
+  }
 }
 
 void gameplayDraw(){
@@ -249,6 +275,7 @@ void gamePlay(){
   if(!isPaused){
     gameplayLogic();
   } else{
+    drawRectangle(pauseBox);
     writeText((char*)"PAUSED", {0,0,12,12}, white, scoreFont);
   }
 
@@ -269,6 +296,7 @@ void gameProcess(){
     case GAME_MENU:
       gameMenu();
       break;
+      
     
     case GAME_PLAYING:
       gamePlay();

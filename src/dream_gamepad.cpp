@@ -50,3 +50,18 @@ void rumbleGamepad(int joystick_index, Uint16 left_motor, Uint16 right_motor, Ui
   cout << "Rumble support: " << SDL_GameControllerHasRumble(player1)<< endl;
   SDL_GameControllerRumble(player1, left_motor, right_motor, duration);  
 }
+
+void clearInputs(){
+  SDL_PumpEvents();
+  SDL_FlushEvent(SDL_CONTROLLERBUTTONDOWN);
+}
+
+bool isAnyButtonPressed() {
+    for (int button = 0; button < SDL_CONTROLLER_BUTTON_MAX; button++) {
+        if (SDL_GameControllerGetButton(player1, static_cast<SDL_GameControllerButton>(button))) {
+            return true; 
+        }
+    }
+    return false;
+}
+
