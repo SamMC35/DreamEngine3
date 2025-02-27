@@ -31,6 +31,8 @@ typedef struct Enemy{
   int id;
   bool anim;
   bool isDying;
+  int row;
+  int column;
 }Enemy;
 
 typedef struct Bullet{
@@ -74,48 +76,63 @@ int menu_index = 0;
 
 bool checkPress = false;
 
+float fResX, fResY, px, py;
+
+float titlePosY;
+
 void gameInit(){
-  gState = GAME_MENU;
+  gState = GAME_TITLE;
   isPaused = false;
 
   loadFontFromFile((char*)"8bit.ttf", titleFont, 56);
   loadFontFromFile((char*)"8bit.ttf", scoreFont, 32);
 
+  fResX = (float)resX;
+  fResY = (float)resY;
+
+  px = (float)resX/12;
+  py = (float)resY/12;
+
   cursor = new Sprite();
   cursor->color = {255,255,255,200};
+
+  titlePosY = -12.0f;
+
+  pauseBox = new Sprite();
+
+  pauseBox->pos = {fResX/2.4f,fResY/2.4f,128,48};
+  pauseBox->color = black;
 }
 
 void gameTitle(){
-  
+  writeText((char*)"SPACE INVADERS", {fResX/6 - (px/4), titlePosY, 0, 0}, white, titleFont);
+
+  if(titlePosY < fResY/6){
+    titlePosY += 0.5f;
+  } else {
+    gState = GAME_MENU;
+  }
+
+  if(checkAnyGamepadPress()){
+    gState = GAME_MENU;
+    canUseButtons = false;
+  }
 }
 
 void gameMenu(){
-  //TODO: write the title screen
-  //Title screen
+ 
 
-  float fResX = (float)resX;
-  float fResY = (float)resY;
+  if(!isAnyButtonPressed()){
+    canUseButtons = true;
+  }
 
-  float px = (float)resX/12;
-  float py = (float)resY/12;
-  
-  writeText((char*)"SPACE INVADERS", {fResX/6 - (px/4), fResY/8, 0, 0}, white, titleFont);
+  writeText((char*)"SPACE INVADERS", {fResX/6 - (px/4), fResY/6, 0, 0}, white, titleFont);
   
   //Menu items
   writeText((char*)"PLAY", {fResX/2.4f, fResY/1.5f, 0, 0}, white, scoreFont);
   writeText((char*)"QUIT", {fResX/2.4f, fResY/1.5f + py, 0, 0}, white, scoreFont);
 
-  if(checkGamepadHold(0, DPadUp)){
-    menu_index--;
-  } else if(checkGamepadHold(0, DPadDown)){
-    menu_index++;
-  }
-
-  if(menu_index > 1){
-    menu_index = 0;
-  } else if(menu_index < 0){
-    menu_index = 1;
-  }
+  
 
   Vector2 cursorPos;
 
@@ -139,11 +156,11 @@ void gameMenu(){
   
   switch(menu_index){
     case 0:
-      writeBlendedText((char*)"PLAY", {fResX/2.4f, fResY/1.5f, 0, 0}, black, scoreFont);
+      writeText((char*)"PLAY", {fResX/2.4f, fResY/1.5f, 0, 0}, black, scoreFont);
       break;
     
     case 1:
-      writeBlendedText((char*)"QUIT", {fResX/2.4f, fResY/1.5f + py, 0, 0}, black, scoreFont);
+      writeText((char*)"QUIT", {fResX/2.4f, fResY/1.5f + py, 0, 0}, black, scoreFont);
       break;
 
     default:
@@ -153,18 +170,32 @@ void gameMenu(){
   
   
   //Logic checkPress
-  if(checkGamepadPress(0, A)){
-    switch (menu_index) {
-      case 0:
-        gameLoad();
-        gState = GAME_PLAYING;
-        break;
-      case 1:
-        killGame();
-        break;
-      default:  
-        break;
-    } 
+
+  if(canUseButtons){
+    if(checkGamepadHold(0, DPadUp)){
+    menu_index--;
+    } else if(checkGamepadHold(0, DPadDown)){
+      menu_index++;
+    }
+
+    if(menu_index > 1){
+      menu_index = 0;
+    } else if(menu_index < 0){
+      menu_index = 1;
+    }
+    if(checkGamepadPress(0, A)){
+      switch (menu_index) {
+        case 0:
+          gameLoad();
+          gState = GAME_PLAYING;
+          break;
+        case 1:
+          killGame();
+          break;
+        default:  
+          break;
+      } 
+    }
   }
 }
 
@@ -173,19 +204,24 @@ void gameLoad(){
 
   player->pSprite = new Sprite();
 
-  player->pSprite->pos = {300.0f, 448.0f, 64.0f, 32.0f};
+  player->pSprite->pos = {300.0f, 448.0f, 48.0f, 24.0f};
   player->pSprite->color = white;
   player->score = 0;
 
-  for(int x = 0; x < 8; x++){
-    Enemy* enemy = new Enemy();
+  for(int y = 0; y < 4; y++){
+    for(int x = 0; x < 10; x++){
+      Enemy* enemy = new Enemy();
 
-    enemy->eSprite = new Sprite();
+      enemy->eSprite = new Sprite();
 
-    enemy->eSprite->pos = {(float)(144 + 64*x), (float)96, (float)48, (float)48};
-    enemy->eSprite->color = {255, 0, 0};
+      enemy->eSprite->pos = {(float)(128 + 48*x), (float)(96 + 48*y), (float)32, (float)32};
+      enemy->eSprite->color = {255, 0, 0};
 
-    enemyList.push_back(enemy);
+      enemy->column = y+1;
+      enemy->row = x+1;
+
+      enemyList.push_back(enemy);
+    }
   }
   canUseButtons = false;
 }
@@ -213,7 +249,7 @@ void bulletLogic(){
     bullet->bSprite = new Sprite();
     Vector2 playerPos = player->pSprite->pos;
 
-    bullet->bSprite->pos = {playerPos.x + playerPos.w/2, playerPos.y, 4, 12};
+    bullet->bSprite->pos = {playerPos.x + playerPos.w/2, playerPos.y, 4, 16};
     bullet->bSprite->color = white;
   }
 
@@ -274,12 +310,14 @@ void gameplayDraw(){
 void gamePlay(){
   if(!isPaused){
     gameplayLogic();
-  } else{
-    drawRectangle(pauseBox);
-    writeText((char*)"PAUSED", {0,0,12,12}, white, scoreFont);
-  }
+  } 
 
   gameplayDraw();
+
+  if(isPaused){
+    drawRectangle(pauseBox);
+    writeText((char*)"PAUSED", {fResX/2.4f,fResY/2.4f,12,12}, white, scoreFont);
+  }
 
   if(checkGamepadHold(0, START)){
     isPaused = !isPaused;

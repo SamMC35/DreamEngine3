@@ -47,5 +47,6 @@ bool checkGamepadHold(int joystick_index, ControllerButton button);
 void clearInputs();
 
 bool isAnyButtonPressed();
+bool checkAnyGamepadPress();
 #endif // !GAMEPAD_H
 
