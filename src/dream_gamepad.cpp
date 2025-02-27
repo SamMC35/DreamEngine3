@@ -65,3 +65,11 @@ bool isAnyButtonPressed() {
     return false;
 }
 
+bool checkAnyGamepadPress(){
+  if(checkGamepadPress(0, A) || checkGamepadPress(0, B) || checkGamepadPress(0, START)){
+    return true;
+  }
+
+  return false;
+}
+
