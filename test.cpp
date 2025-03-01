@@ -4,6 +4,7 @@
 #include <dream_variables.h>
 #include <dream_gamepad.h>
 #include <dream_text.h>
+#include <dream_sound.h>
 
 using namespace std;
 
@@ -23,6 +24,20 @@ int main(){
     while(!checkQuit()){
       clearScreen();
 
+      if(checkGamepadHold(0, A)){
+        // play_beep(440, 200);  // A4
+
+        play_beep(440, 200);  // A4
+        play_beep(494, 200);  // B4
+        play_beep(523, 200);  // C5
+        play_beep(587, 200);  // D5
+        play_beep(659, 400);
+      }
+
+      if(checkGamepadHold(0, B)){
+        play_beep(50, 200);  // A4
+      }
+
       pos = sprite->pos;
 
       if(checkGamepadPress(0, DPadLeft)){
@@ -30,6 +45,7 @@ int main(){
       } 
 
       if(checkGamepadPress(0, DPadRight)){
+        rumbleGamepad(0, 6000,6000,1000);
         pos.x += 2;
       }
 
@@ -38,7 +54,7 @@ int main(){
       pos.x += (checkGamepadAnalog(0, LeftStickX) / 32767) * 4;
 
       if(checkGamepadPress(0, A)){
-       rumbleGamepad(0, 6000,6000,1000);
+       
       }
 
       sprite->pos = pos;
