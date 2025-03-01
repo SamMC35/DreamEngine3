@@ -6,6 +6,8 @@
 #include <dream_gamepad.h>
 #include <dream_graphics.h>
 
+#include <dream_sound.h>
+
 #include <game.h>
 
 #define LEFTPLAYERX 96
@@ -173,8 +175,10 @@ void gameMenu(){
 
   if(canUseButtons){
     if(checkGamepadHold(0, DPadUp)){
-    menu_index--;
+      play_beep(440, 50);
+      menu_index--;
     } else if(checkGamepadHold(0, DPadDown)){
+      play_beep(440, 50);
       menu_index++;
     }
 
@@ -251,6 +255,8 @@ void bulletLogic(){
 
     bullet->bSprite->pos = {playerPos.x + playerPos.w/2, playerPos.y, 4, 16};
     bullet->bSprite->color = white;
+
+    play_beep(600, 50);
   }
 
   if(bullet != NULL){
@@ -276,6 +282,7 @@ void checkBulletCollision(){
         enemyList.erase(it);  
         delete bullet;
         bullet = NULL;
+        play_beep(100, 150);
         break;  
     }
   }
