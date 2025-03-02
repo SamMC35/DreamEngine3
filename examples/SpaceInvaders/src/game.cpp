@@ -220,8 +220,11 @@ void gameLoad(){
   player = new Player();
 
   player->pSprite = new Sprite();
+  
+  loadTexture(player->pSprite, (char*) "examples/SpaceInvaders/resources/spaceShip.png");
 
   player->pSprite->pos = {300.0f, 448.0f, 48.0f, 24.0f};
+  
   player->pSprite->color = white;
   player->score = 0;
 
@@ -270,7 +273,7 @@ void bulletLogic(){
     bullet->bSprite = new Sprite();
     Vector2 playerPos = player->pSprite->pos;
 
-    bullet->bSprite->pos = {playerPos.x + playerPos.w/2, playerPos.y, 4, 16};
+    bullet->bSprite->pos = {playerPos.x + (playerPos.w/2 - 2.0f), playerPos.y, 2, 16};
     bullet->bSprite->color = white;
 
     play_beep(0, 750, 75);
@@ -346,7 +349,7 @@ void checkEnemyNumbers(){
     eVelX *= 1.4f;
 
     cout << "Changed timer: " << invaderTimer->max_time << endl;
-    cout << "Invader speed: " << eVelx << endl;
+    cout << "Invader speed: " << eVelX << endl;
     cout << "Invader Size: " << enemyList.size() << endl;
   }
 }
@@ -375,7 +378,7 @@ void gameplayLogic(){
 }
 
 void gameplayDraw(){
-  drawRectangle(player->pSprite);
+  renderTexture(player->pSprite);
 
   for(Enemy* e : enemyList){
     drawRectangle(e->eSprite);

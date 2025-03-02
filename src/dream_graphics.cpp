@@ -51,6 +51,9 @@ void loadTexture(Sprite* sprite, char* path){
     return;
   }
 
+  sprite->width = temp->w;
+  sprite->height = temp->h;
+
   sprite->pos.w = temp->w;
   sprite->pos.h = temp->h;
 
@@ -69,7 +72,7 @@ void loadTexture(Sprite* sprite, char* path){
 //Renders a texture
 void renderTexture(Sprite* sprite){
   Vector2 pos = sprite->pos;
-  SDL_Rect rect = {(int)pos.x, (int)pos.y, (int)pos.w, (int)pos.w};
+  SDL_Rect rect = {(int)pos.x, (int)pos.y, (int)pos.w, (int)pos.h};
 
   SDL_RenderCopy(renderer, sprite->texture, NULL, &rect);
 }

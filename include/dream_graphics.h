@@ -11,6 +11,8 @@ typedef struct Sprite{
     Color color;
 
     int scaleX, scaleY;
+
+    int width, height;
 } Sprite;
 
 void drawRectangle(Sprite*);
