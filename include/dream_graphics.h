@@ -18,4 +18,11 @@ void drawLine(Sprite*);
 void drawPixel(Sprite*);
 void drawBlendRectangle(Sprite*);
 
-#endif // !DEBUG
+void loadTexture(Sprite*, char*);
+
+void scaleTexture(Sprite*, Vector2);
+
+void renderTexture(Sprite*);
+void renderTextureCropped(Sprite*, Vector2);
+
+#endif 

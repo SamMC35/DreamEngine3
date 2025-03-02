@@ -4,6 +4,7 @@
 #include <dream_variables.h>
 
 #include <SDL.h>
+#include <SDL_image.h>
 
 
 void setColor(Color color){
@@ -39,4 +40,45 @@ void drawBlendRectangle(Sprite* sprite){
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_MOD);
   drawRectangle(sprite);
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+}
+
+//Loads a Texture
+void loadTexture(Sprite* sprite, char* path){
+  SDL_Surface* temp = IMG_Load(path);
+
+  if(!temp){
+    cerr << "Failed to Load Image" << IMG_GetError() << endl;
+    return;
+  }
+
+  sprite->pos.w = temp->w;
+  sprite->pos.h = temp->h;
+
+  SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, temp);
+
+  if(!texture){
+    cerr << "Failed to create Texture: " << SDL_GetError() << endl;
+    return;
+  }
+
+  sprite->texture = texture;
+
+  SDL_FreeSurface(temp);
+}
+
+//Renders a texture
+void renderTexture(Sprite* sprite){
+  Vector2 pos = sprite->pos;
+  SDL_Rect rect = {(int)pos.x, (int)pos.y, (int)pos.w, (int)pos.w};
+
+  SDL_RenderCopy(renderer, sprite->texture, NULL, &rect);
+}
+
+void renderTextureCropped(Sprite* sprite, Vector2 cropPos){
+  SDL_Rect cropRect = {(int)cropPos.x, (int)cropPos.y, (int)cropPos.w, (int)cropPos.h};
+
+  Vector2 pos = sprite->pos;
+  SDL_Rect rect = {(int)pos.x, (int)pos.y, (int)pos.w, (int)pos.w};
+
+  SDL_RenderCopy(renderer, sprite->texture, &cropRect, &rect);  
 }
