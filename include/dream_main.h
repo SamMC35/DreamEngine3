@@ -12,5 +12,7 @@ void clearScreen();                                     // Clears the screen
 bool collisionCheck(Vector2 a, Vector2 b);              //Checks collision 
 void killGame();                                        //Kill game
 
+void resetTimer(Timer* timer);
+void incrementTimer(Timer* timer);
 
 #endif

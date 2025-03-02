@@ -82,6 +82,14 @@ float fResX, fResY, px, py;
 
 float titlePosY;
 
+float leftX = 96.0f, rightX = 624.0f;
+
+float eVelX = 4.0f;
+
+int eMoveDir = -1;
+
+Timer* invaderTimer;
+
 void gameInit(){
   gState = GAME_TITLE;
   isPaused = false;
@@ -104,6 +112,7 @@ void gameInit(){
 
   pauseBox->pos = {fResX/2.4f,fResY/2.4f,128,48};
   pauseBox->color = black;
+  
 }
 
 void gameTitle(){
@@ -175,10 +184,10 @@ void gameMenu(){
 
   if(canUseButtons){
     if(checkGamepadHold(0, DPadUp)){
-      play_beep(440, 50);
+      play_beep(0, 440, 50);
       menu_index--;
     } else if(checkGamepadHold(0, DPadDown)){
-      play_beep(440, 50);
+      play_beep(0, 440, 50);
       menu_index++;
     }
 
@@ -228,6 +237,10 @@ void gameLoad(){
     }
   }
   canUseButtons = false;
+
+  invaderTimer = new Timer();
+
+  invaderTimer->max_time = 120;
 }
 
 void playerLogic(){
@@ -241,7 +254,7 @@ void playerLogic(){
     velX = 4;
   }
 
-  if(player->pSprite->pos.x + velX < LEFTPLAYERX || player->pSprite->pos.x+player->pSprite->pos.w + velX > RIGHTPLAYERX){
+  if(player->pSprite->pos.x + velX < leftX || player->pSprite->pos.x+player->pSprite->pos.w + velX > rightX){
     velX = 0;
   }
   player->pSprite->pos.x += velX;
@@ -256,11 +269,11 @@ void bulletLogic(){
     bullet->bSprite->pos = {playerPos.x + playerPos.w/2, playerPos.y, 4, 16};
     bullet->bSprite->color = white;
 
-    play_beep(600, 50);
+    play_beep(0, 750, 75);
   }
 
   if(bullet != NULL){
-    float velY = -4;
+    float velY = -8.0f;
 
     bullet->bSprite->pos.y += velY;
 
@@ -282,8 +295,32 @@ void checkBulletCollision(){
         enemyList.erase(it);  
         delete bullet;
         bullet = NULL;
-        play_beep(100, 150);
+        play_beep(1, 100, 150);
         break;  
+    }
+  }
+}
+
+void enemyLogic(){
+  bool moveDown = false;
+  
+
+  //Check if invaders need to move down
+
+  for(Enemy* e : enemyList){
+    if((((e->eSprite->pos.x - eVelX) < leftX ) && eMoveDir < 0) || ((e->eSprite->pos.x + e->eSprite->pos.w + eVelX) > rightX) && eMoveDir > 0)
+    {
+      moveDown = true;
+      eMoveDir = -(eMoveDir);
+      break;
+    }
+  }
+
+  for(Enemy* e : enemyList){
+    if(moveDown){
+      e->eSprite->pos.y += 8.0f;
+    } else {
+      e->eSprite->pos.x += eVelX * eMoveDir;
     }
   }
 }
@@ -296,10 +333,15 @@ void gameplayLogic(){
   if(canUseButtons){
     playerLogic();
     bulletLogic();
+    if(invaderTimer->current_time >= invaderTimer->max_time){
+      enemyLogic();
+      resetTimer(invaderTimer);
+    }
   }
   if(bullet != NULL){
     checkBulletCollision();
   }
+  incrementTimer(invaderTimer);
 }
 
 void gameplayDraw(){

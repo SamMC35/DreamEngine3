@@ -11,6 +11,8 @@
 
 #define SAMPLE_RATE 44100
 #define AMPLITUDE 28000
+
+#define MAX_CHANNELS 4;
 using namespace std;
 //Add a list of screens along with their priority
 
@@ -31,7 +33,12 @@ bool gCanQuit = false;
 unsigned int resX = 0;
 unsigned int resY = 0;
 
-SoundData sound = {440, 0, 50, 0};
+SoundData channels[4] = {0};
+
+const int TARGET_FPS = 60;
+const int FRAME_DELAY = 1000 / TARGET_FPS;
+
+Uint32 frameStart;
 
 void audio_callback(void *userdata, Uint8 *stream, int len);
 
@@ -67,7 +74,6 @@ bool initDreamEngine(char* window_name, int resX_arg, int resY_arg, bool fullscr
           spec.channels = 1;
           spec.samples = 2048;
           spec.callback = audio_callback;
-          spec.userdata = &sound;
 
           audio_device = SDL_OpenAudioDevice(NULL, 0, &spec, NULL, 0);
           if (!audio_device) {
@@ -110,23 +116,21 @@ void audio_callback(void *userdata, Uint8 *stream, int len) {
     int samples = len / sizeof(int16_t);
 
     for (int i = 0; i < samples; i++) {
-        if (sound.active && sound.sample_count < sound.duration_samples) {
-            
-            int period = SAMPLE_RATE / sound.frequency;
-            buffer[i] = ((sound.sample_count % period) < (period / 2) ? 1 : -1) * 8000;
+        int16_t mixed_sample = 0;
+        Uint32 now = SDL_GetTicks();
 
-            sound.sample_count++;
+        for (int ch = 0; ch < 4; ch++) {
+            if (channels[ch].active && now < channels[ch].end_time) {
+                int period = SAMPLE_RATE / channels[ch].frequency;
+                mixed_sample += ((channels[ch].sample_count % period) < (period / 2) ? 1 : -1) * 4000;
 
-            if (SDL_GetTicks() >= sound.end_time) {
-                sound.active = 0;
+                channels[ch].sample_count++;
+            } else {
+                channels[ch].active = 0; 
             }
-        } else {
-            buffer[i] = 0; 
         }
-    }
 
-    if (sound.sample_count >= sound.duration_samples) {
-        sound.active = 0;
+        buffer[i] = mixed_sample;
     }
 }
 
@@ -135,6 +139,14 @@ bool collisionCheck(Vector2 a, Vector2 b){
   SDL_FRect* bRect = new SDL_FRect{b.x, b.y, b.w, b.h};
 
   return SDL_HasIntersectionF(aRect, bRect);
+}
+
+void resetTimer(Timer* timer){
+  timer->current_time = 0;
+}
+
+void incrementTimer(Timer* timer){
+  timer->current_time++;
 }
 
 void quitDreamEngine(){
@@ -148,6 +160,7 @@ void quitDreamEngine(){
 
 void clearScreen(){
 		// Clear everything
+    frameStart = SDL_GetTicks();
     SDL_SetRenderDrawColor(renderer, 0,0,0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 }
@@ -156,4 +169,9 @@ void clearScreen(){
 void render(){
 		// Render the screens
     SDL_RenderPresent(renderer);
+
+    Uint32 frameTime = SDL_GetTicks() - frameStart; 
+    if (frameTime < FRAME_DELAY) {
+        SDL_Delay(FRAME_DELAY - frameTime); 
+    }
 }

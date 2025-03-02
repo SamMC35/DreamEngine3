@@ -34,8 +34,8 @@ typedef struct {
     Uint32 end_time;
 } SoundData;
 
+extern SoundData channels[4];
 
-extern SoundData sound;
 
 
 //Color data
@@ -49,5 +49,9 @@ typedef struct Font{
   char* fontPath;
 }Font;
 
+typedef struct Timer{
+  int max_time;
+  int current_time;
+}Timer;
 
 #endif 
