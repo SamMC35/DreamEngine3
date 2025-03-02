@@ -149,6 +149,10 @@ void incrementTimer(Timer* timer){
   timer->current_time++;
 }
 
+void setMaxTimer(Timer *timer, int time){
+  timer->max_time = time;
+}
+
 void quitDreamEngine(){
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);

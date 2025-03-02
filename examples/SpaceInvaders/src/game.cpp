@@ -90,6 +90,10 @@ int eMoveDir = -1;
 
 Timer* invaderTimer;
 
+
+vector<int> speedChangeNums = {2, 5, 10, 20, 30};
+
+int lastThreshold = -1;
 void gameInit(){
   gState = GAME_TITLE;
   isPaused = false;
@@ -240,7 +244,7 @@ void gameLoad(){
 
   invaderTimer = new Timer();
 
-  invaderTimer->max_time = 120;
+  invaderTimer->max_time = 90;
 }
 
 void playerLogic(){
@@ -325,6 +329,28 @@ void enemyLogic(){
   }
 }
 
+void checkEnemyNumbers(){
+  int index = -1;
+
+  for (size_t i = 0; i < speedChangeNums.size(); i++) {
+            if (enemyList.size() < speedChangeNums[i]) {
+                index = i;
+                break;
+            }
+        }
+
+  if(index != lastThreshold && index != -1){
+    lastThreshold = index;
+    setMaxTimer(invaderTimer, invaderTimer->max_time/2);
+
+    eVelX *= 1.4f;
+
+    cout << "Changed timer: " << invaderTimer->max_time << endl;
+    cout << "Invader speed: " << eVelx << endl;
+    cout << "Invader Size: " << enemyList.size() << endl;
+  }
+}
+
 
 void gameplayLogic(){
   if(!isAnyButtonPressed()){
@@ -335,12 +361,16 @@ void gameplayLogic(){
     bulletLogic();
     if(invaderTimer->current_time >= invaderTimer->max_time){
       enemyLogic();
+      
       resetTimer(invaderTimer);
     }
   }
   if(bullet != NULL){
     checkBulletCollision();
   }
+  
+  checkEnemyNumbers();
+  
   incrementTimer(invaderTimer);
 }
 

@@ -15,4 +15,5 @@ void killGame();                                        //Kill game
 void resetTimer(Timer* timer);
 void incrementTimer(Timer* timer);
 
+void setMaxTimer(Timer* timer, int time);
 #endif
