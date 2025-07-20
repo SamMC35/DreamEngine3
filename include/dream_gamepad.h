@@ -48,5 +48,6 @@ void clearInputs();
 
 bool isAnyButtonPressed();
 bool checkAnyGamepadPress();
+void printJoystickState()
 #endif // !GAMEPAD_H
 

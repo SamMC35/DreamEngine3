@@ -72,6 +72,8 @@ bool initDreamEngine(char* window_name, int resX_arg, int resY_arg, bool fullscr
           for(int i = 0; i < SDL_NumJoysticks(); i++){
             player1 = SDL_JoystickOpen(i);
             cout << "Gamepad added: " << SDL_JoystickNameForIndex(i) << endl;
+
+            printJoystickState();
           }
 
           SDL_AudioSpec spec = {0};
