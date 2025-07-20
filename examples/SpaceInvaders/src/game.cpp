@@ -186,10 +186,10 @@ void gameMenu(){
   //Logic checkPress
 
   if(canUseButtons){
-    if(checkGamepadHold(0, DPadUp)){
+    if(isDPadHeld(DPadUp)){
       play_beep(0, 440, 50);
       menu_index--;
-    } else if(checkGamepadHold(0, DPadDown)){
+    } else if(isDPadHeld(DPadDown)){
       play_beep(0, 440, 50);
       menu_index++;
     }
@@ -254,9 +254,9 @@ void playerLogic(){
 
   float velX = 0;
 
-  if(checkGamepadPress(0, DPadLeft)){
+  if(isDPadPressed(DPadLeft)){
     velX = -4; 
-  } else if(checkGamepadPress(0, DPadRight)){
+  } else if(isDPadPressed(DPadRight)){
     velX = 4;
   }
 

@@ -26,7 +26,7 @@ SDL_Renderer* renderer = nullptr;
 
 SDL_AudioDeviceID audio_device;
 
-SDL_GameController* player1;
+SDL_Joystick* player1;
 
 bool gCanQuit = false;
 
@@ -63,9 +63,15 @@ bool initDreamEngine(char* window_name, int resX_arg, int resY_arg, bool fullscr
           cout << "Renderer Created:" << renderer << endl;
           success = true;
           //TODO: please change this later
+
+          if (SDL_NumJoysticks() < 1) {
+              cerr << "No joystick connected!" << endl;
+              return false;
+          }
+
           for(int i = 0; i < SDL_NumJoysticks(); i++){
             player1 = SDL_JoystickOpen(i);
-            cout << "Gamepad added: " << SDL_GameControllerName(player1) << endl;
+            cout << "Gamepad added: " << SDL_JoystickNameForIndex(i) << endl;
           }
 
           SDL_AudioSpec spec = {0};

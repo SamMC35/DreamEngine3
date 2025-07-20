@@ -16,7 +16,7 @@ using namespace std;
 extern SDL_Renderer* renderer;             //Single Renderer used by DreamEngine3
 extern unsigned int scaleX, scaleY;        //scale X and Y sizes based on resolutions
 extern unsigned int resX, resY;           //Resolution of the game
-extern SDL_GameController* player1;
+extern SDL_Joystick* player1;
 extern SDL_AudioDeviceID audio_device;
 
 

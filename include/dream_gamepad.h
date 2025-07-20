@@ -19,8 +19,7 @@ typedef enum ControllerButton{
         // Shoulder buttons
         L = SDL_CONTROLLER_BUTTON_LEFTSHOULDER,          // Left bumper
         R = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,          // Right bumper
-        ZL,         // Left trigger
-        ZR,         // Right trigger
+      // Right trigger
 
         START = SDL_CONTROLLER_BUTTON_START,
 
@@ -43,7 +42,8 @@ bool checkGamepadPress(int joystick_index, ControllerButton button);
 float checkGamepadAnalog(int joystick_index, ControllerAxis axis);
 void rumbleGamepad(int joystick_index, Uint16 left_motor, Uint16 right_motor, Uint32 duration);
 bool checkGamepadHold(int joystick_index, ControllerButton button);
-
+bool isDPadPressed(ControllerButton btn);
+bool isDPadHeld(ControllerButton btn);
 void clearInputs();
 
 bool isAnyButtonPressed();
