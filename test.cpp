@@ -8,6 +8,8 @@
 
 using namespace std;
 
+
+
 int main(){
   if(initDreamEngine((char*) "Test", 800, 600, false)){
     Sprite* sprite = new Sprite();
@@ -25,6 +27,7 @@ int main(){
     sprite->pos.y = pos.y;
 
     sprite->color = color;
+    play_beep(0, 4400, 2);
     while(!checkQuit()){
       clearScreen();
 

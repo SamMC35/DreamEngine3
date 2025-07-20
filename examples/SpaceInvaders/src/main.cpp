@@ -5,7 +5,6 @@
 
 int main(){
   //Initialize the game
-  //
   
   if(initDreamEngine((char*) "Space Invaders", 720, 480, false)){
     

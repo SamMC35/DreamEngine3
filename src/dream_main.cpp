@@ -64,7 +64,7 @@ bool initDreamEngine(char* window_name, int resX_arg, int resY_arg, bool fullscr
           success = true;
           //TODO: please change this later
           for(int i = 0; i < SDL_NumJoysticks(); i++){
-            player1 = SDL_GameControllerOpen(i);
+            player1 = SDL_JoystickOpen(i);
             cout << "Gamepad added: " << SDL_GameControllerName(player1) << endl;
           }
 

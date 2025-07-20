@@ -37,7 +37,6 @@ typedef struct {
 extern SoundData channels[4];
 
 
-
 //Color data
 typedef struct Color{
   Uint8 r, g, b, a;
@@ -53,5 +52,6 @@ typedef struct Timer{
   int max_time;
   int current_time;
 }Timer;
+
 
 #endif 

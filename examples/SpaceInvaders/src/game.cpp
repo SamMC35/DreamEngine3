@@ -135,7 +135,6 @@ void gameTitle(){
 }
 
 void gameMenu(){
- 
 
   if(!isAnyButtonPressed()){
     canUseButtons = true;
