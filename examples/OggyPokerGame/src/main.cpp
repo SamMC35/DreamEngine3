@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include <dream_main.h>
 
 
@@ -7,7 +6,7 @@
 #define SCREEN_HEIGHT 480
 
 int main(){
-  if(initDreamEngine((char*) "Oggy's Poker Night", SCREEN_WIDTH, SCREEN_HEIGHT, true){
+  if(initDreamEngine((char*) "Oggy's Poker Night", SCREEN_WIDTH, SCREEN_HEIGHT, true)){
     cout << "Initializing Game" << endl;
 
     while(!checkQuit()){
