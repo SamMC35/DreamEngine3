@@ -9,6 +9,7 @@
 #include <dream_sound.h>
 
 #include <game.h>
+#include <sstream>
 
 #define LEFTPLAYERX 96
 #define RIGHTPLAYERX 624
@@ -221,7 +222,7 @@ void gameLoad(){
 
   player->pSprite = new Sprite();
   
-  loadTexture(player->pSprite, (char*) "examples/SpaceInvaders/resources/spaceShip.png");
+  loadTexture(player->pSprite, (char*) "resources/spaceShip.png");
 
   player->pSprite->pos = {300.0f, 448.0f, 48.0f, 24.0f};
   
@@ -268,7 +269,7 @@ void playerLogic(){
 }
 
 void bulletLogic(){
-  if(bullet == NULL && checkGamepadPress(0, A)){
+  if(bullet == nullptr && checkGamepadPress(0, A)){
     bullet = new Bullet();
     bullet->bSprite = new Sprite();
     Vector2 playerPos = player->pSprite->pos;
@@ -279,14 +280,14 @@ void bulletLogic(){
     playBeep(0, 750, 75);
   }
 
-  if(bullet != NULL){
+  if(bullet != nullptr){
     float velY = -8.0f;
 
     bullet->bSprite->pos.y += velY;
 
     if(bullet->bSprite->pos.y < 0){
       delete bullet;
-      bullet = NULL;
+      bullet = nullptr;
     }
   }
 }
@@ -301,8 +302,9 @@ void checkBulletCollision(){
         delete *it;  
         enemyList.erase(it);  
         delete bullet;
-        bullet = NULL;
+        bullet = nullptr;
         playBeep(1, 100, 150);
+        player->score += 100;
         break;  
     }
   }
@@ -368,7 +370,7 @@ void gameplayLogic(){
       resetTimer(invaderTimer);
     }
   }
-  if(bullet != NULL){
+  if(bullet != nullptr){
     checkBulletCollision();
   }
   
@@ -384,7 +386,7 @@ void gameplayDraw(){
     drawRectangle(e->eSprite);
   }
 
-  if(bullet != NULL){
+  if(bullet != nullptr){
     drawRectangle(bullet->bSprite);
   }
 }
@@ -395,6 +397,12 @@ void gamePlay(){
   } 
 
   gameplayDraw();
+
+  stringstream score_s;
+
+  score_s << "Score: " << player->score;
+
+  writeText((char*)score_s.str().c_str(), {10, 10, 12, 12}, white, scoreFont);
 
   if(isPaused){
     drawRectangle(pauseBox);
