@@ -35,8 +35,8 @@ unsigned int resY = 0;
 
 SoundData channels[4] = {0};
 
-const int TARGET_FPS = 60;
-const int FRAME_DELAY = 1000 / TARGET_FPS;
+constexpr int TARGET_FPS = 60;
+constexpr int FRAME_DELAY = 1000 / TARGET_FPS;
 
 Uint32 frameStart;
 
@@ -60,7 +60,7 @@ bool initDreamEngine(char* window_name, int resX_arg, int resY_arg, bool fullscr
         // cout << info->flags << endl;  
         if(renderer){
           // SDL_GetRendererInfo(renderer, info);
-          cout << "Renderer Created:" << renderer << endl;
+          cout << "Renderer Created: " << renderer << endl;
           success = true;
           //TODO: please change this later
           for(int i = 0; i < SDL_NumJoysticks(); i++){

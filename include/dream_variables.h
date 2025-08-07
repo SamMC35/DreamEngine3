@@ -52,6 +52,7 @@ typedef struct Font{
 typedef struct Timer{
   int max_time;
   int current_time;
+  bool active;
 }Timer;
 
 #endif 

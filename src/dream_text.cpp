@@ -8,7 +8,7 @@ using namespace std;
 void loadFontFromFile(char* path, Font* font, int ptSize){
   TTF_Font* fontTtf = TTF_OpenFont(path, ptSize);
 
-  if(fontTtf != NULL){
+  if(fontTtf != nullptr){
     font->fontTtf = fontTtf;
     font->fontPath = path;
     font->ptSize = ptSize;
@@ -18,7 +18,7 @@ void loadFontFromFile(char* path, Font* font, int ptSize){
 }
 
 void changeFontSize(Font* font, int ptSize){
-  if(font->fontPath == NULL){
+  if(font->fontPath == nullptr){
     cerr << "Font Path Empty" << endl; 
     return;
   }
