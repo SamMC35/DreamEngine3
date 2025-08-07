@@ -188,10 +188,10 @@ void gameMenu(){
 
   if(canUseButtons){
     if(checkGamepadHold(0, DPadUp)){
-      play_beep(0, 440, 50);
+      playBeep(0, 440, 50);
       menu_index--;
     } else if(checkGamepadHold(0, DPadDown)){
-      play_beep(0, 440, 50);
+      playBeep(0, 440, 50);
       menu_index++;
     }
 
@@ -276,7 +276,7 @@ void bulletLogic(){
     bullet->bSprite->pos = {playerPos.x + (playerPos.w/2 - 2.0f), playerPos.y, 2, 16};
     bullet->bSprite->color = white;
 
-    play_beep(0, 750, 75);
+    playBeep(0, 750, 75);
   }
 
   if(bullet != NULL){
@@ -302,7 +302,7 @@ void checkBulletCollision(){
         enemyList.erase(it);  
         delete bullet;
         bullet = NULL;
-        play_beep(1, 100, 150);
+        playBeep(1, 100, 150);
         break;  
     }
   }

@@ -6,7 +6,7 @@
 #define AMPLITUDE 28000
 #define MAX_CHANNELS 4;
 
-void play_beep(int channel, float frequency, int duration) {
+void playBeep(int channel, float frequency, int duration) {
     if (channel < 0 || channel >= 4) return;
 
     SDL_LockAudio();

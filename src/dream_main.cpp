@@ -35,7 +35,7 @@ unsigned int resY = 0;
 
 SoundData channels[4] = {0};
 
-constexpr int TARGET_FPS = 60;
+constexpr int TARGET_FPS = 70;
 constexpr int FRAME_DELAY = 1000 / TARGET_FPS;
 
 Uint32 frameStart;

@@ -3,7 +3,7 @@
 
 
 
-void play_beep(int channel, float frequency, int duration);
+void playBeep(int channel, float frequency, int duration);
 
 
 #endif
