@@ -1,6 +1,8 @@
 #ifndef VARIABLES_H
 #define VARIABLES_H
 
+#include <dream_variables.h>
+
 typedef enum Suit {
     CLUBS,
     HEARTS,
@@ -56,5 +58,23 @@ typedef enum Decision {
     RAISED,
     FOLDED
 }Decision;
+
+typedef enum GameState {
+    INTRO,
+    MAIN_MENU,
+    OPTIONS,
+    GAME,
+    PAUSED,
+    GAME_OVER
+}GameState;
+
+
+
+typedef enum PlayState {
+    SHUFFLING,
+    FIRST_ROUND,
+    SECOND_ROUND,
+    RESULTS
+}PlayState;
 
 #endif

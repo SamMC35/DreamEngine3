@@ -13,4 +13,4 @@ The last time I updated Dream Engine 2, I wasn't aware of all the coding standar
 
 ### Final Deployment
 
-A Raspberry Pi 3B. 
+RG34XXSP

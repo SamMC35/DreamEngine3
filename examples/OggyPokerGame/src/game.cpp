@@ -3,16 +3,57 @@
 
 #include <dream_text.h>
 
+#include "dream_gamepad.h"
+#include "dream_main.h"
+#include "menu_service.h"
+
 GameState gameState;
 
 unordered_map<string, Timer*> timers;
 
-auto menu_text = (char*) "MENU";
+auto menu_text = (char*) "OGGY Poker Game PH";
 
 Vector2 menu_pos = {240, 40, 32, 32};
 constexpr Color white = {255, 255, 255, 255};
 
 Font* font = new Font();
+
+MenuService* menuService;
+
+void createMainMenuItems() {
+  CircularList<MenuOption*> menuOptions;
+
+  MenuOption* play = new MenuOption();
+  play->name = (char*)"Play";
+  play->pos = {128,116,16, 16};
+
+  MenuOption* quit = new MenuOption();
+  quit->name = (char*)"Quit";
+  quit->pos = {128,160,16, 16};
+
+  menuOptions.add(play);
+  menuOptions.add(quit);
+
+  MenuBox* menuBox = new MenuBox();
+
+  Sprite* boxSprite = new Sprite();
+  boxSprite->pos = {120, 120, 96, 96};
+  boxSprite->color = {219,31, 134};
+
+  menuBox->boxSprite = boxSprite;
+
+  Sprite* borderSprite = new Sprite();
+  borderSprite->pos = {96, 96, 144, 144};
+  borderSprite->color = {219,123, 134};
+
+  menuBox->borderSprite = borderSprite;
+
+  menuBox->selectedColor = white;
+  menuBox->baseColor = {0,0,0};
+
+  menuService = new MenuService(menuOptions, menuBox, font);
+  menuService->initCurrentOption();
+}
 
 void initGame(){
   //Init states
@@ -25,7 +66,9 @@ void initGame(){
 
   timers["intro"] = timer;
 
-  loadFontFromFile((char*)"8bit.ttf", font, 16);
+  loadFontFromFile((char*)"8bit.ttf", font, 32);
+
+  createMainMenuItems();
 }
 
 void processIntro() {
@@ -34,9 +77,8 @@ void processIntro() {
   menu_pos.x += 0.4f;
   menu_pos.y += 0.4f;
 
-  if (const auto timer = timers["intro"]; timer->current_time > timer->max_time) {
+  if (checkGamepadHold(0,A)) {
     gameState = MENU;
-    timer->active = false;
   }
 }
 
@@ -48,8 +90,30 @@ void processTimers() {
   }
 }
 
-void processMenu() {
+void processMenu(){
+  menuService->processInputs();
 
+  if (MenuService::pollInput()) {
+    MenuOption* menuOption = menuService->getCurrentMenuOption();
+
+    cout << "Menu Option Selected: " << menuOption->name << endl;
+
+    std::string menuOptionName = menuOption->name;
+
+    if (menuOptionName == "Quit") {
+      killGame();
+    } else if (menuOptionName == "Play") {
+      gameState = GAME;
+    } else {
+      std::cout << "Invalid menu option: " << menuOptionName << std::endl;
+    }
+
+  }
+
+  //Render OGGYPokerGame title card
+  
+
+  menuService->renderMenu();
 }
 
 void processGame() {
@@ -68,7 +132,10 @@ void executeGameLoop() {
       break;
     case GAME:
       processGame();
+      break;
     default:
       std::cerr << "Unrecognized game state" << std::endl;
+      killGame();
+      break;
   }
 }
