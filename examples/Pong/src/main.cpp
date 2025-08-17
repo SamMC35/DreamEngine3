@@ -7,7 +7,7 @@ using namespace std;
 
 int main() {
     if (initDreamEngine((char*) "Pong", 720, 480, true)) {
-        initGame();
+        initSystems();
         while (!checkQuit()) {
             clearScreen();
             processOneLoop();

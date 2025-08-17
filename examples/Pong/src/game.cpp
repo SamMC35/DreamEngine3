@@ -58,7 +58,7 @@ std::random_device rd;
 std::mt19937 gen(rd());
 std::uniform_real_distribution<float> dist(-3.0f, 3.0f);
 
-void initGame() {
+void initSystems() {
     player = new Sprite();
 
     player->pos = {30.0f, 60.0f, UNIT, UNIT*6};

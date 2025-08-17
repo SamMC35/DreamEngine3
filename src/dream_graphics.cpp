@@ -69,6 +69,19 @@ void loadTexture(Sprite* sprite, char* path){
   SDL_FreeSurface(temp);
 }
 
+//Renders an outlined rectangle
+void drawOutlinedRectangle(Sprite* sprite, int borderSize, Color color) {
+  setColor(color);
+
+  Vector2 pos = sprite->pos;
+
+  SDL_Rect borderRect = {(int)pos.x - borderSize, (int)pos.y - borderSize, (int)pos.w + (borderSize*2), (int)pos.h + (borderSize * 2)};
+  SDL_RenderFillRect(renderer, &borderRect);
+
+  drawRectangle(sprite);
+}
+
+
 //Renders a texture
 void renderTexture(Sprite* sprite){
   Vector2 pos = sprite->pos;

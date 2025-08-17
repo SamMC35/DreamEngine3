@@ -27,11 +27,8 @@ void MenuService::initCurrentOption() {
 }
 
 void MenuService::renderMenu() {
-	//Render border
-	drawRectangle(menuBox->borderSprite);
-
 	//Render box
-	drawRectangle(menuBox->boxSprite);
+	drawOutlinedRectangle(menuBox->boxSprite, 8, {255, 255, 255});
 
 	//Render menu items
 	for (auto it = menuOptions.begin(); it != menuOptions.end(); ++it) {

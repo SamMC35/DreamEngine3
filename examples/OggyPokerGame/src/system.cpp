@@ -1,4 +1,4 @@
-#include <game.h>
+#include <system.h>
 #include <iostream>
 
 #include <dream_text.h>
@@ -55,7 +55,7 @@ void createMainMenuItems() {
   menuService->initCurrentOption();
 }
 
-void initGame(){
+void initSystems(){
   //Init states
   gameState = INTRO;
 
@@ -120,7 +120,7 @@ void processGame() {
 
 }
 
-void executeGameLoop() {
+void executeSystemLoop() {
   processTimers();
 
   switch(gameState) {

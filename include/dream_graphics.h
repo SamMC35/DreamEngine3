@@ -20,6 +20,8 @@ void drawLine(Sprite*);
 void drawPixel(Sprite*);
 void drawBlendRectangle(Sprite*);
 
+void drawOutlinedRectangle(Sprite*, int borderSize, Color color);
+
 void loadTexture(Sprite*, char*);
 
 void scaleTexture(Sprite*, Vector2);
