@@ -1,6 +1,8 @@
 #include <number_selector.h>
 #include <sstream>
 
+#include <dream_text.h>
+
 
 NumberSelector::NumberSelector(vector<int> integerArray, Vector2 pos, Color color, Font *font) {
 	this->integerArray = integerArray;
@@ -11,7 +13,7 @@ NumberSelector::NumberSelector(vector<int> integerArray, Vector2 pos, Color colo
 
 
 void NumberSelector::renderNumber() {
-
+	writeText((char*)std::to_string(getNumber()).c_str(), pos, color, font);
 }
 
 int NumberSelector::getNumber() {

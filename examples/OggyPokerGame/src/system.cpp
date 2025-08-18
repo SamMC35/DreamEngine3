@@ -6,6 +6,7 @@
 #include "dream_gamepad.h"
 #include "dream_main.h"
 #include "menu_service.h"
+#include "number_selector.h"
 
 GameState gameState;
 
@@ -19,6 +20,7 @@ constexpr Color white = {255, 255, 255, 255};
 Font* font = new Font();
 
 MenuService* menuService;
+NumberSelector* numberSelector;
 
 void createMainMenuItems() {
   CircularList<MenuOption*> menuOptions;
@@ -53,6 +55,14 @@ void createMainMenuItems() {
 
   menuService = new MenuService(menuOptions, menuBox, font);
   menuService->initCurrentOption();
+
+  vector<int> numbers;
+
+  numbers.push_back(2);
+  numbers.push_back(3);
+  numbers.push_back(4);
+
+  numberSelector = new NumberSelector(numbers, {12, 34, 56, 67}, white, font);
 }
 
 void initSystems(){
@@ -80,6 +90,8 @@ void processIntro() {
   if (checkGamepadHold(0,A)) {
     gameState = MENU;
   }
+
+  numberSelector->renderNumber();
 }
 
 void processTimers() {
