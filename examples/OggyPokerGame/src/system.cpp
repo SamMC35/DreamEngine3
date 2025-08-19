@@ -92,6 +92,8 @@ void processIntro() {
   }
 
   numberSelector->renderNumber();
+  numberSelector->processInput();
+
 }
 
 void processTimers() {
