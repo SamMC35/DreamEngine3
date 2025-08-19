@@ -50,7 +50,7 @@ float enemyYVel = 3.2f;
 Timer gWaitTimer;
 Timer gAiReactTimer;
 
-Font* font = new Font();
+Font* titleFont = new Font();
 
 Vector2 ballInitPos = {480.0f-UNIT, 240.0f-UNIT, UNIT, UNIT};
 
@@ -82,7 +82,7 @@ void initSystems() {
     ballMoveX = 1;
     ballMoveY = 1;
 
-    loadFontFromFile((char*)"8bit.ttf", font, 32);
+    loadFontFromFile((char*)"8bit.ttf", titleFont, 32);
 
 
 }
@@ -100,8 +100,8 @@ void drawGame() {
     stringstream p2Score;
     p2Score << gP2Score;
 
-    writeText((char*)p1Score.str().c_str(), {120, 15, 0, 0}, white, font);
-    writeText((char*)p2Score.str().c_str(), {560, 15, 0, 0}, white, font);
+    writeText((char*)p1Score.str().c_str(), {120, 15, 0, 0}, white, titleFont);
+    writeText((char*)p2Score.str().c_str(), {560, 15, 0, 0}, white, titleFont);
 
 }
 

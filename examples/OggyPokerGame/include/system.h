@@ -4,7 +4,8 @@
 typedef enum GameState {
     INTRO,
     GAME,
-    MENU
+    MENU,
+    MONEY_SELECT
 }GameState;
 
 void initSystems();        //Init Game

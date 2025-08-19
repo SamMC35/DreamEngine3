@@ -17,7 +17,8 @@ auto menu_text = (char*) "OGGY Poker Game PH";
 Vector2 menu_pos = {240, 40, 32, 32};
 constexpr Color white = {255, 255, 255, 255};
 
-Font* font = new Font();
+Font* titleFont = new Font();
+Font* textFont = new Font();
 
 MenuService* menuService;
 NumberSelector* numberSelector;
@@ -53,7 +54,7 @@ void createMainMenuItems() {
   menuBox->selectedColor = white;
   menuBox->baseColor = {0,0,0};
 
-  menuService = new MenuService(menuOptions, menuBox, font);
+  menuService = new MenuService(menuOptions, menuBox, titleFont);
   menuService->initCurrentOption();
 
   vector<int> numbers;
@@ -62,7 +63,7 @@ void createMainMenuItems() {
   numbers.push_back(3);
   numbers.push_back(4);
 
-  numberSelector = new NumberSelector(numbers, {12, 34, 56, 67}, white, font);
+  numberSelector = new NumberSelector(numbers, {12, 34, 56, 67}, white, titleFont);
 }
 
 void initSystems(){
@@ -76,13 +77,14 @@ void initSystems(){
 
   timers["intro"] = timer;
 
-  loadFontFromFile((char*)"8bit.ttf", font, 32);
+  loadFontFromFile((char*)"8bit.ttf", titleFont, 32);
+  loadFontFromFile((char*)"8bit.ttf", textFont, 8);
 
   createMainMenuItems();
 }
 
 void processIntro() {
-  writeText(menu_text, menu_pos, white, font);
+  writeText(menu_text, menu_pos, white, titleFont);
 
   menu_pos.x += 0.4f;
   menu_pos.y += 0.4f;
@@ -117,7 +119,7 @@ void processMenu(){
     if (menuOptionName == "Quit") {
       killGame();
     } else if (menuOptionName == "Play") {
-      gameState = GAME;
+      gameState = MONEY_SELECT;
     } else {
       std::cout << "Invalid menu option: " << menuOptionName << std::endl;
     }
@@ -125,13 +127,24 @@ void processMenu(){
   }
 
   //Render OGGYPokerGame title card
-  
 
   menuService->renderMenu();
 }
 
 void processGame() {
 
+}
+
+void processMoneySelect() {
+  //Render border
+  Sprite* blankSprite = new Sprite();
+  blankSprite->pos = {96, 96, 360, 96};
+  blankSprite->color = {0,0,0,0};
+
+  drawOutlinedRectangle(blankSprite, 4, {255, 255, 255});
+
+  Vector2 textPos = {blankSprite->pos.x + 4, blankSprite->pos.y + 4};
+  writeText((char*) "Add Money", textPos, white, textFont);
 }
 
 void executeSystemLoop() {
@@ -143,6 +156,9 @@ void executeSystemLoop() {
       break;
     case MENU:
       processMenu();
+      break;
+    case MONEY_SELECT:
+      processMoneySelect();
       break;
     case GAME:
       processGame();

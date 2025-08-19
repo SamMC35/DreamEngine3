@@ -63,6 +63,7 @@ typedef enum GameState {
     INTRO,
     MAIN_MENU,
     OPTIONS,
+    MONEY_SELECT,
     GAME,
     PAUSED,
     GAME_OVER
