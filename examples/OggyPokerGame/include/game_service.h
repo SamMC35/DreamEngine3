@@ -7,15 +7,16 @@
 #include <variables.h>
 
 typedef struct Player {
-	std::string name;
-	int money;
-	std::list<Card*> cards;
-	Hand hand;
-	PlayState playState;
-	std::map<Hand, DecisionFactor> decisionFactorMap;
-}Player;
+  std::string name;
+  int money;
+  std::list<Card *> cards;
+  Hand hand;
+  PlayState playState;
+  std::map<Hand, DecisionFactor> decisionFactorMap;
+} Player;
 
-void initGame();	// Init the game loop
-void executeOneLoop(); //One cycle
+typedef enum TableState { MONEY_TABLE, PLAYING_TABLE } TableState;
+void initGame();       // Init the game loop
+void executeOneLoop(); // One cycle
 
-#endif //GAME_SERVICE_H
+#endif // GAME_SERVICE_H

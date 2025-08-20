@@ -1,5 +1,5 @@
-#include <system.h>
 #include <iostream>
+#include <system.h>
 
 #include <dream_text.h>
 
@@ -10,49 +10,51 @@
 
 GameState gameState;
 
-unordered_map<string, Timer*> timers;
+unordered_map<string, Timer *> timers;
 
-auto menu_text = (char*) "OGGY Poker Game PH";
+auto menu_text = (char *)"OGGY Poker Game PH";
 
 Vector2 menu_pos = {240, 40, 32, 32};
 constexpr Color white = {255, 255, 255, 255};
 
-Font* titleFont = new Font();
-Font* textFont = new Font();
+Font *titleFont = new Font();
+Font *textFont = new Font();
 
-MenuService* menuService;
-NumberSelector* numberSelector;
+MenuService *menuService;
+NumberSelector *numberSelector;
+
+NumberSelector *moneyNumberSelector;
 
 void createMainMenuItems() {
-  CircularList<MenuOption*> menuOptions;
+  CircularList<MenuOption *> menuOptions;
 
-  MenuOption* play = new MenuOption();
-  play->name = (char*)"Play";
-  play->pos = {128,116,16, 16};
+  MenuOption *play = new MenuOption();
+  play->name = (char *)"Play";
+  play->pos = {128, 116, 16, 16};
 
-  MenuOption* quit = new MenuOption();
-  quit->name = (char*)"Quit";
-  quit->pos = {128,160,16, 16};
+  MenuOption *quit = new MenuOption();
+  quit->name = (char *)"Quit";
+  quit->pos = {128, 160, 16, 16};
 
   menuOptions.add(play);
   menuOptions.add(quit);
 
-  MenuBox* menuBox = new MenuBox();
+  MenuBox *menuBox = new MenuBox();
 
-  Sprite* boxSprite = new Sprite();
+  Sprite *boxSprite = new Sprite();
   boxSprite->pos = {120, 120, 96, 96};
-  boxSprite->color = {219,31, 134};
+  boxSprite->color = {219, 31, 134};
 
   menuBox->boxSprite = boxSprite;
 
-  Sprite* borderSprite = new Sprite();
+  Sprite *borderSprite = new Sprite();
   borderSprite->pos = {96, 96, 144, 144};
-  borderSprite->color = {219,123, 134};
+  borderSprite->color = {219, 123, 134};
 
   menuBox->borderSprite = borderSprite;
 
   menuBox->selectedColor = white;
-  menuBox->baseColor = {0,0,0};
+  menuBox->baseColor = {0, 0, 0};
 
   menuService = new MenuService(menuOptions, menuBox, titleFont);
   menuService->initCurrentOption();
@@ -63,22 +65,23 @@ void createMainMenuItems() {
   numbers.push_back(3);
   numbers.push_back(4);
 
-  numberSelector = new NumberSelector(numbers, {12, 34, 56, 67}, white, titleFont);
+  numberSelector =
+      new NumberSelector(numbers, {12, 34, 56, 67}, white, titleFont);
 }
 
-void initSystems(){
-  //Init states
+void initSystems() {
+  // Init states
   gameState = INTRO;
 
-  auto* timer = new Timer();
+  auto *timer = new Timer();
   timer->max_time = 600;
   timer->current_time = 0;
   timer->active = true;
 
   timers["intro"] = timer;
 
-  loadFontFromFile((char*)"8bit.ttf", titleFont, 32);
-  loadFontFromFile((char*)"8bit.ttf", textFont, 8);
+  loadFontFromFile((char *)"8bit.ttf", titleFont, 32);
+  loadFontFromFile((char *)"8bit.ttf", textFont, 16);
 
   createMainMenuItems();
 }
@@ -89,28 +92,27 @@ void processIntro() {
   menu_pos.x += 0.4f;
   menu_pos.y += 0.4f;
 
-  if (checkGamepadHold(0,A)) {
+  if (checkGamepadHold(0, A)) {
     gameState = MENU;
   }
 
   numberSelector->renderNumber();
   numberSelector->processInput();
-
 }
 
 void processTimers() {
-  for (const auto& [timer_name, timer] : timers) {
+  for (const auto &[timer_name, timer] : timers) {
     if (timer->active) {
       timer->current_time++;
     }
   }
 }
 
-void processMenu(){
+void processMenu() {
   menuService->processInputs();
 
   if (MenuService::pollInput()) {
-    MenuOption* menuOption = menuService->getCurrentMenuOption();
+    MenuOption *menuOption = menuService->getCurrentMenuOption();
 
     cout << "Menu Option Selected: " << menuOption->name << endl;
 
@@ -120,52 +122,74 @@ void processMenu(){
       killGame();
     } else if (menuOptionName == "Play") {
       gameState = MONEY_SELECT;
+      switchState();
     } else {
       std::cout << "Invalid menu option: " << menuOptionName << std::endl;
     }
-
   }
 
-  //Render OGGYPokerGame title card
+  // TODO:  Render OGGYPokerGame title card
 
   menuService->renderMenu();
 }
 
-void processGame() {
+vector<int> moneyNumbers;
 
+void switchState() {
+  switch (gameState) {
+  case MONEY_SELECT:
+
+    moneyNumbers.push_back(0);
+    moneyNumbers.push_back(1);
+    moneyNumbers.push_back(0);
+    moneyNumbers.push_back(0);
+
+    moneyNumberSelector =
+        new NumberSelector(moneyNumbers, {96 + 36, 96 + 36}, white, textFont);
+
+    break;
+  default:
+    break;
+  }
 }
 
+void processGame() {}
+
 void processMoneySelect() {
-  //Render border
-  Sprite* blankSprite = new Sprite();
+  // Render border
+  Sprite *blankSprite = new Sprite();
   blankSprite->pos = {96, 96, 360, 96};
-  blankSprite->color = {0,0,0,0};
+  blankSprite->color = {0, 0, 0, 0};
 
   drawOutlinedRectangle(blankSprite, 4, {255, 255, 255});
 
-  Vector2 textPos = {blankSprite->pos.x + 4, blankSprite->pos.y + 4};
-  writeText((char*) "Add Money", textPos, white, textFont);
+  writeText((char *)"Money Select",
+            {blankSprite->pos.x + 12, blankSprite->pos.y + 12}, white,
+            textFont);
+
+  moneyNumberSelector->processInput();
+  moneyNumberSelector->renderNumber();
 }
 
 void executeSystemLoop() {
   processTimers();
 
-  switch(gameState) {
-    case INTRO:
-      processIntro();
-      break;
-    case MENU:
-      processMenu();
-      break;
-    case MONEY_SELECT:
-      processMoneySelect();
-      break;
-    case GAME:
-      processGame();
-      break;
-    default:
-      std::cerr << "Unrecognized game state" << std::endl;
-      killGame();
-      break;
+  switch (gameState) {
+  case INTRO:
+    processIntro();
+    break;
+  case MENU:
+    processMenu();
+    break;
+  case MONEY_SELECT:
+    processMoneySelect();
+    break;
+  case GAME:
+    processGame();
+    break;
+  default:
+    std::cerr << "Unrecognized game state" << std::endl;
+    killGame();
+    break;
   }
 }
