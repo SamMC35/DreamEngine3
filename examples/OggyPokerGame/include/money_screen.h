@@ -1,19 +1,25 @@
 #ifndef MONEY_SCREEN_H
 #define MONEY_SCREEN_H
 
-#include <dream_main.h>
+#include "variables.h"
 
-class MoneyScreen{
-private:
-  Timer timer;
+#include <vector>
+
+#include "dream_variables.h"
+
+using namespace std;
+
+class MoneyScreen {
+
+  vector<PlayerData *> playerDataList;
+  bool shouldProceed = false;
 
 public:
-  void moneyScreenInit();       //Init money screen 
-  void moneyScreenRender();     //Render money screen
+  void moneyScreenInit(vector<PlayerData *>); // Init money screen
+  void moneyScreenRender();                   // Render money screen
+  void calculateAnimation();                  // Animate table
+
+  bool returnShouldProceed();
 };
 
-
 #endif // !MONEY_SCREEN_H
-
-
-

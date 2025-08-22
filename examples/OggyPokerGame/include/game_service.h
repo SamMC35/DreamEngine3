@@ -15,7 +15,7 @@ typedef struct Player {
   std::map<Hand, DecisionFactor> decisionFactorMap;
 } Player;
 
-typedef enum TableState { MONEY_TABLE, PLAYING_TABLE } TableState;
+typedef enum TableState { MONEY, PLAYING_TABLE } TableState;
 void initGame();       // Init the game loop
 void executeOneLoop(); // One cycle
 

@@ -1,9 +1,5 @@
-#ifndef VARIABLES_H
-#define VARIABLES_H
-
-#ifdef SDL_AudioDeviceID
-#undef SDL_AudioDeviceID
-#endif
+#ifndef DREAM_VARIABLES_H
+#define DREAM_VARIABLES_H
 
 #include <SDL.h>
 #include <SDL_gamecontroller.h>

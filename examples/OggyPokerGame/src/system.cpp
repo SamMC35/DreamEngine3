@@ -2,11 +2,14 @@
 #include <system.h>
 
 #include <dream_text.h>
+#include <vector>
 
 #include "dream_gamepad.h"
 #include "dream_main.h"
 #include "menu_service.h"
+#include "money_screen.h"
 #include "number_selector.h"
+#include "variables.h"
 
 GameState gameState;
 
@@ -24,6 +27,8 @@ MenuService *menuService;
 NumberSelector *numberSelector;
 
 NumberSelector *moneyNumberSelector;
+
+MoneyScreen *moneyScreen;
 
 void createMainMenuItems() {
   CircularList<MenuOption *> menuOptions;
@@ -96,8 +101,10 @@ void processIntro() {
     gameState = MENU;
   }
 
-  numberSelector->renderNumber();
-  numberSelector->processInput();
+  // numberSelector->renderNumber();
+  // numberSelector->processInput();
+  //
+  moneyScreen = new MoneyScreen();
 }
 
 void processTimers() {
@@ -169,7 +176,23 @@ void processMoneySelect() {
 
   moneyNumberSelector->processInput();
   moneyNumberSelector->renderNumber();
+
+  if (checkGamepadHold(0, A)) {
+    gameState = MONEY_TABLE;
+
+    vector<PlayerData *> playerDataList;
+
+    PlayerData *playerData = new PlayerData();
+    playerData->name = (char *)"Oggy";
+    playerData->moneyHave = 1500;
+
+    playerDataList.emplace_back(playerData);
+
+    moneyScreen->moneyScreenInit(playerDataList);
+  }
 }
+
+void processTable() { moneyScreen->moneyScreenRender(); }
 
 void executeSystemLoop() {
   processTimers();
@@ -186,6 +209,9 @@ void executeSystemLoop() {
     break;
   case GAME:
     processGame();
+    break;
+  case MONEY_TABLE:
+    processTable();
     break;
   default:
     std::cerr << "Unrecognized game state" << std::endl;
