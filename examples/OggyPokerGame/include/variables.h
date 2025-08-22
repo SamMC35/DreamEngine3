@@ -69,7 +69,12 @@ typedef enum GameState {
     GAME_OVER
 }GameState;
 
-
+typedef struct PlayerData{
+  char* name;
+  Hand hand;
+  int moneyWon;
+  int moneyHave;
+}
 
 typedef enum PlayState {
     SHUFFLING,
