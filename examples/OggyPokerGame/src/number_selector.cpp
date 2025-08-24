@@ -21,7 +21,7 @@ NumberSelector::NumberSelector(vector<int> integerArray, Vector2 pos,
 
   cout << "X:" << lineSprite->pos.x << endl;
   cout << "Y:" << lineSprite->pos.y << endl;
-  this->lineSprite->color = {255, 255, 255};
+  this->lineSprite->color = {255, 255, 255, 255};
 }
 
 void NumberSelector::renderNumber() {

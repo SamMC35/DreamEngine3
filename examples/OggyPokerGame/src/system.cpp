@@ -48,18 +48,18 @@ void createMainMenuItems() {
 
   Sprite *boxSprite = new Sprite();
   boxSprite->pos = {120, 120, 96, 96};
-  boxSprite->color = {219, 31, 134};
+  boxSprite->color = {219, 31, 134, 255};
 
   menuBox->boxSprite = boxSprite;
 
   Sprite *borderSprite = new Sprite();
   borderSprite->pos = {96, 96, 144, 144};
-  borderSprite->color = {219, 123, 134};
+  borderSprite->color = {219, 123, 134, 255};
 
   menuBox->borderSprite = borderSprite;
 
   menuBox->selectedColor = white;
-  menuBox->baseColor = {0, 0, 0};
+  menuBox->baseColor = {0, 0, 0, 255};
 
   menuService = new MenuService(menuOptions, menuBox, titleFont);
   menuService->initCurrentOption();
@@ -166,9 +166,9 @@ void processMoneySelect() {
   // Render border
   Sprite *blankSprite = new Sprite();
   blankSprite->pos = {96, 96, 360, 96};
-  blankSprite->color = {0, 0, 0, 0};
+  blankSprite->color = {0, 0, 0, 255};
 
-  drawOutlinedRectangle(blankSprite, 4, {255, 255, 255});
+  drawOutlinedRectangle(blankSprite, 4, {255, 255, 255, 255});
 
   writeText((char *)"Money Select",
             {blankSprite->pos.x + 12, blankSprite->pos.y + 12}, white,
@@ -178,21 +178,28 @@ void processMoneySelect() {
   moneyNumberSelector->renderNumber();
 
   if (checkGamepadHold(0, A)) {
+    int moneyInit = moneyNumberSelector->getNumber();
     gameState = MONEY_TABLE;
 
     vector<PlayerData *> playerDataList;
 
-    PlayerData *playerData = new PlayerData();
-    playerData->name = (char *)"Oggy";
-    playerData->moneyHave = 1500;
+    vector<char *> names = {"Oggy", "Jack", "Dee Dee", "Marky", "Joey"};
 
-    playerDataList.emplace_back(playerData);
+    for (char *name : names) {
+      PlayerData *playerData = new PlayerData();
+      playerData->name = name;
+      playerData->moneyHave = moneyInit;
+      playerDataList.push_back(playerData);
+    }
 
-    moneyScreen->moneyScreenInit(playerDataList);
+    moneyScreen->moneyScreenInit(playerDataList, textFont);
   }
 }
 
-void processTable() { moneyScreen->moneyScreenRender(); }
+void processTable() {
+  moneyScreen->moneyScreenRender();
+  moneyScreen->calculateAnimation();
+}
 
 void executeSystemLoop() {
   processTimers();

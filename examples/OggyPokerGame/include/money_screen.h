@@ -14,10 +14,13 @@ class MoneyScreen {
   vector<PlayerData *> playerDataList;
   bool shouldProceed = false;
 
+  Font *textFont;
+
 public:
-  void moneyScreenInit(vector<PlayerData *>); // Init money screen
-  void moneyScreenRender();                   // Render money screen
-  void calculateAnimation();                  // Animate table
+  void moneyScreenInit(vector<PlayerData *>,
+                       Font *textFont); // Init money screen
+  void moneyScreenRender();             // Render money screen
+  void calculateAnimation();            // Animate table
 
   bool returnShouldProceed();
 };
